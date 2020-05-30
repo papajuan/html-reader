@@ -1,10 +1,11 @@
 package com.reader.entities;
 
-import com.sun.istack.Nullable;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
+import java.util.Set;
 
 /**
  * @author papajuan
@@ -19,7 +20,7 @@ public class ChannelTag {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
+//    @Column(name = "channelTagId")
     private long id;
 
     @Column(name = "tag")
@@ -37,8 +38,8 @@ public class ChannelTag {
     @Nullable
     private String selector;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "channel", referencedColumnName = "id")
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "id", referencedColumnName = "id", insertable = false, updatable = false)
     private Channel channel;
 
     public ChannelTag(String tag, String text, String source, String selector, Channel channel) {

@@ -2,8 +2,10 @@ package com.reader.entities;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
+import java.util.Set;
 
 /**
  * @author papajuan
@@ -18,11 +20,15 @@ public class Channel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
+//    @Column(name = "channelId", nullable = false)
     private int id;
 
     @Column(name = "link")
     private String link;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "channel")
+    @Nullable
+    private Set<ChannelTag> channelTags;
 
     public Channel(String link) {
         this.link = link;
