@@ -2,7 +2,6 @@ package com.reader.entities;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -26,8 +25,7 @@ public class Channel {
     @Column(name = "link")
     private String link;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "channel")
-    @Nullable
+    @OneToMany(mappedBy = "channel")
     private Set<ChannelTag> channelTags;
 
     public Channel(String link) {

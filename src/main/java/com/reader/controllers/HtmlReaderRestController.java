@@ -7,7 +7,6 @@ import com.reader.repositories.ChannelTagRepository;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,12 +29,13 @@ public class HtmlReaderRestController {
     private ChannelTagRepository channelTagRepository;
 
     @RequestMapping(path = "/addChannel")
-    public void addChannel(@RequestParam String link) {
+    public String addChannel(@RequestParam String link) {
         Channel channel = new Channel(link);
         channelRepository.save(channel);
+        return "The channel has been added!";
     }
 
-    @GetMapping(path = "/listAvailableTags")
+    @GetMapping(path = "/listAvailableTags", produces = "application/json")
     public Set<String> listAvailableTags(@RequestParam int id)  {
         Channel channel = channelRepository.findById(id).get();
         Set<String> tags;
@@ -50,6 +50,28 @@ public class HtmlReaderRestController {
         }
 
         return tags;
+    }
+
+    @PostMapping(path = "/addTags", consumes = "application/json")
+    public String addTags(@RequestParam int channelId, @RequestBody List<String> neededTags) {
+        Channel channel = channelRepository.findById(channelId).get();
+        List<ChannelTag> channelTags = new ArrayList<>();
+        try {
+            Document document = Jsoup.parse(new URL(channel.getLink()), 6000);
+            for(String tag : neededTags) {
+                for (Element element : document.getElementsByTag(tag)) {
+                    String text = element.hasText() ? element.text() : null;
+                    String source = getSource(element);
+                    String selector = element.hasAttr("class") ? element.attributes().get("class") : null;
+                    ChannelTag channelTag = new ChannelTag(tag, text, source, selector, channel);
+                    channelTags.add(channelTag);
+                }
+            }
+        } catch (IOException e) { }
+
+        channelTagRepository.saveAll(channelTags);
+
+        return "Tags have been added successfully!";
     }
 
     @GetMapping(path = "/getChannelInfo")
@@ -71,5 +93,10 @@ public class HtmlReaderRestController {
 //        } catch (IOException e) {
 //
 //        }
+    }
+
+    private String getSource(Element element) {
+        return element.hasAttr("src") ? element.attributes().get("src") :
+                (element.hasAttr("href") ? element.attributes().get("href") : null);
     }
 }

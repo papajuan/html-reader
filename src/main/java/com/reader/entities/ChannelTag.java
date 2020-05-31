@@ -5,7 +5,6 @@ import lombok.NoArgsConstructor;
 import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
-import java.util.Set;
 
 /**
  * @author papajuan
@@ -21,16 +20,16 @@ public class ChannelTag {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
 //    @Column(name = "channelTagId")
-    private long id;
+    private long tagId;
 
-    @Column(name = "tag")
+    @Column(name = "tag", length = 10)
     private String tag;
 
-    @Column(name = "text")
+    @Column(name = "text", length = 10000)
     @Nullable
     private String text;
 
-    @Column(name = "source")
+    @Column(name = "source", length = 1000)
     @Nullable
     private String source;
 
@@ -38,8 +37,8 @@ public class ChannelTag {
     @Nullable
     private String selector;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "id", referencedColumnName = "id", insertable = false, updatable = false)
+    @ManyToOne
+    @JoinColumn(name = "channelId", referencedColumnName = "id", nullable = false)
     private Channel channel;
 
     public ChannelTag(String tag, String text, String source, String selector, Channel channel) {
