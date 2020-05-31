@@ -1,5 +1,6 @@
 package com.reader.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.lang.Nullable;
@@ -19,13 +20,14 @@ public class ChannelTag {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @JsonIgnore
 //    @Column(name = "channelTagId")
-    private long tagId;
+    private long id;
 
-    @Column(name = "tag", length = 10)
+    @Column(name = "tag", length = 20)
     private String tag;
 
-    @Column(name = "text", length = 10000)
+    @Column(name = "text", length = 100000)
     @Nullable
     private String text;
 
@@ -37,9 +39,15 @@ public class ChannelTag {
     @Nullable
     private String selector;
 
+    @JsonIgnore
     @ManyToOne
-    @JoinColumn(name = "channelId", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "channel_id", referencedColumnName = "id", nullable = false)
     private Channel channel;
+
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "parent_id", referencedColumnName = "id", nullable = true)
+    private ChannelTag parent;
 
     public ChannelTag(String tag, String text, String source, String selector, Channel channel) {
         this.tag = tag;

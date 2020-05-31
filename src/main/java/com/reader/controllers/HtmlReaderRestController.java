@@ -32,7 +32,7 @@ public class HtmlReaderRestController {
     public String addChannel(@RequestParam String link) {
         Channel channel = new Channel(link);
         channelRepository.save(channel);
-        return "The channel has been added!";
+        return "The channel with id " + channel.getId() + " has been added!";
     }
 
     @GetMapping(path = "/listAvailableTags", produces = "application/json")
@@ -60,11 +60,12 @@ public class HtmlReaderRestController {
             Document document = Jsoup.parse(new URL(channel.getLink()), 6000);
             for(String tag : neededTags) {
                 for (Element element : document.getElementsByTag(tag)) {
-                    String text = element.hasText() ? element.text() : null;
+                    String text = element.hasText() ? element.text() : element.outerHtml();
                     String source = getSource(element);
                     String selector = element.hasAttr("class") ? element.attributes().get("class") : null;
                     ChannelTag channelTag = new ChannelTag(tag, text, source, selector, channel);
                     channelTags.add(channelTag);
+
                 }
             }
         } catch (IOException e) { }
@@ -74,9 +75,11 @@ public class HtmlReaderRestController {
         return "Tags have been added successfully!";
     }
 
-    @GetMapping(path = "/getChannelInfo")
-    public @ResponseBody Map<String, String> getChannelInfo(@RequestParam Channel channel) {
-        return null;
+    @GetMapping(path = "/getChannelInfo", produces = "application/json")
+    public @ResponseBody
+    List<ChannelTag> getChannelInfo(@RequestParam int channelId) throws IOException {
+        Channel channel = channelRepository.findById(channelId).get();
+        return channel.getChannelTags();
     }
 
     @PostMapping(path = "/saveTags")

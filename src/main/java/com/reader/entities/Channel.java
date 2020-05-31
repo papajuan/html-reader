@@ -4,7 +4,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.Set;
+import java.util.List;
 
 /**
  * @author papajuan
@@ -19,14 +19,13 @@ public class Channel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-//    @Column(name = "channelId", nullable = false)
     private int id;
 
     @Column(name = "link")
     private String link;
 
     @OneToMany(mappedBy = "channel")
-    private Set<ChannelTag> channelTags;
+    private List<ChannelTag> channelTags;
 
     public Channel(String link) {
         this.link = link;
