@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author papajuan
@@ -26,6 +27,9 @@ public class Channel {
 
     @OneToMany(mappedBy = "channel")
     private List<ChannelTag> channelTags;
+
+    @OneToMany(mappedBy = "channel")
+    private Set<SearchParam> searchParams;
 
     public Channel(String link) {
         this.link = link;

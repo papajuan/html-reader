@@ -5,7 +5,7 @@ import com.reader.entities.Channel;
 import com.reader.entities.ChannelTag;
 import com.reader.repositories.ChannelRepository;
 import com.reader.repositories.ChannelTagRepository;
-import com.reader.services.ChannelTagService;
+import com.reader.services.ChannelService;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -28,17 +28,15 @@ public class HtmlReaderRestController {
     private ChannelRepository channelRepository;
 
     @Autowired
-    private ChannelTagService channelTagService;
-
-    @Autowired
     private ChannelTagRepository channelTagRepository;
 
-    private HashMap<Element, ChannelTag> tagMap = new HashMap<>();
+    @Autowired
+    private ChannelService channelService;
 
     @RequestMapping(path = "/addChannel")
     public String addChannel(@RequestParam String link) {
         Channel channel = new Channel(link);
-        channelRepository.save(channel);
+        channelService.saveOrUpdate(channel);
         return "The channel with id " + channel.getId() + " has been added!";
     }
 
@@ -61,43 +59,8 @@ public class HtmlReaderRestController {
 
     @PostMapping(path = "/addTags", consumes = "application/json")
     public String addTags(@RequestParam int channelId, @RequestBody List<String> neededTags) {
-        Channel channel = channelRepository.findById(channelId).get();
-        try {
-            Document document = Jsoup.parse(new URL(channel.getLink()), 6000);
-            for(String tag : neededTags) {
-                for (Element element : document.getElementsByTag(tag)) {
-                    ChannelTag newTag = setTag(element, channel, tag);
-                    channelTagService.saveOrUpdate(newTag);
-                    tagMap.put(element, newTag);
-                }
-            }
-        } catch (IOException e) { }
-
-        setParents();
-
+        channelService.addTagsToChannel(channelId, neededTags);
         return "Tags have been added successfully!";
-    }
-
-    private ChannelTag setTag(Element element, Channel channel, String tag) {
-        String text = element.hasText() ? element.text() : element.outerHtml();
-        String source = getSource(element);
-        String selector = element.hasAttr("class") ? element.attributes().get("class") : null;
-        ChannelTag channelTag = new ChannelTag(tag, text, source, selector, channel);
-
-        channelTagService.saveOrUpdate(channelTag);
-
-        return channelTag;
-    }
-
-    private void setParents() {
-        for(Element element : tagMap.keySet()) {
-            if(element.hasParent()) {
-                ChannelTag parentTag = tagMap.get(element.parent());
-                ChannelTag newTag = tagMap.get(element);
-                newTag.setParent(parentTag);
-                channelTagService.saveOrUpdate(newTag);
-            }
-        }
     }
 
     @GetMapping(path = "/getChannelInfo", produces = "application/json")
@@ -118,10 +81,5 @@ public class HtmlReaderRestController {
             for(ChannelTag child : children)
                 listChildren(child);
         }
-    }
-
-    private String getSource(Element element) {
-        return element.hasAttr("src") ? element.attributes().get("src") :
-                (element.hasAttr("href") ? element.attributes().get("href") : null);
     }
 }
