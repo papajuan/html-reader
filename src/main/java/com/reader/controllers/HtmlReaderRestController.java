@@ -67,6 +67,7 @@ public class HtmlReaderRestController {
             for(String tag : neededTags) {
                 for (Element element : document.getElementsByTag(tag)) {
                     ChannelTag newTag = setTag(element, channel, tag);
+                    channelTagService.saveOrUpdate(newTag);
                     tagMap.put(element, newTag);
                 }
             }
