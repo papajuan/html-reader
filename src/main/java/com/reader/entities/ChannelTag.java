@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
+import java.util.List;
 
 /**
  * @author papajuan
@@ -48,6 +49,9 @@ public class ChannelTag {
     @ManyToOne
     @JoinColumn(name = "parent_id", referencedColumnName = "id", nullable = true)
     private ChannelTag parent;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<ChannelTag> children;
 
     public ChannelTag(String tag, String text, String source, String selector, Channel channel) {
         this.tag = tag;
