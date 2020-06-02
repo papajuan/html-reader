@@ -29,6 +29,13 @@ public interface ChannelTagRepository extends CrudRepository<ChannelTag, Long> {
     @Query("from ChannelTag ct where ct.parent = :parent")
     public Iterable<ChannelTag> listChildrenTags(@Param("parent") ChannelTag parent);
 
-    @Query("from ChannelTag  ct where ct.parent is null and ct.channel = :channel")
+    @Query("from ChannelTag ct where ct.channel.id = :channelId and ct.text like %:text%")
+    public Iterable<ChannelTag> findTagByString(@Param("channelId") int channelId, @Param("text") String text);
+
+    @Query("from ChannelTag ct where ct.parent is null and ct.channel = :channel")
     public Iterable<ChannelTag> findRootTags(@Param("channel") Channel channel);
+
+
+
+
 }

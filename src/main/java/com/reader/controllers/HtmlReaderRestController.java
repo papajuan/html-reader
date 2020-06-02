@@ -21,6 +21,7 @@ import java.util.*;
  * @date 5/29/2020
  **/
 
+@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 public class HtmlReaderRestController {
 
@@ -33,11 +34,11 @@ public class HtmlReaderRestController {
     @Autowired
     private ChannelService channelService;
 
-    @RequestMapping(path = "/addChannel")
-    public String addChannel(@RequestParam String link) {
+    @GetMapping(path = "/addChannel", produces = "application/json")
+    public Channel addChannel(@RequestParam String link) {
         Channel channel = new Channel(link);
         channelService.saveOrUpdate(channel);
-        return "The channel with id " + channel.getId() + " has been added!";
+        return channel;
     }
 
     @GetMapping(path = "/listAvailableTags", produces = "application/json")
@@ -65,13 +66,7 @@ public class HtmlReaderRestController {
 
     @GetMapping(path = "/getChannelInfo", produces = "application/json")
     public @ResponseBody Iterable<ChannelTag> getChannelInfo(@RequestParam int channelId) {
-        Channel channel = channelRepository.findById(channelId).get();
-        Iterable<ChannelTag> rootTags = channelTagRepository.findRootTags(channel);
-
-        for(ChannelTag rootTag : rootTags)
-            listChildren(rootTag);
-
-        return rootTags;
+        return getRootTags(channelId, null);
     }
 
     private void listChildren(ChannelTag parent) {
@@ -81,5 +76,21 @@ public class HtmlReaderRestController {
             for(ChannelTag child : children)
                 listChildren(child);
         }
+    }
+
+    private Iterable<ChannelTag> getRootTags(int channelId, String searchString) {
+        Channel channel = channelRepository.findById(channelId).get();
+        Iterable<ChannelTag> rootTags = searchString == null ?
+                channelTagRepository.findRootTags(channel) : channelTagRepository.findTagByString(channelId, searchString);
+
+        for(ChannelTag rootTag : rootTags)
+            listChildren(rootTag);
+
+        return rootTags;
+    }
+
+    @GetMapping(path = "/getChannelInfoWithParams", produces = "application/json")
+    public @ResponseBody Iterable<ChannelTag> getChannelInfo(@RequestParam int channelId, @RequestParam String searchString) {
+        return getRootTags(channelId, searchString);
     }
 }
