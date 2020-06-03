@@ -3,3 +3,10 @@
     <input id="channelInput" type="text" [(ngModel)]="channelLink">
     <button (click)="sendChannelLink()">submit</button>
 </div>
+<div>
+    <select multiple id="availableTags" [(ngModel)]="availableTags">
+        <option *ngFor="let tag of availableTags">
+
+        </option>
+    </select>
+</div>

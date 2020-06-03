@@ -10,6 +10,7 @@ import java.util.Set;
 /**
  * @author papajuan
  * @date 5/29/2020
+ * Channel entity
  **/
 
 @Entity

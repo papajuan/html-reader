@@ -15,6 +15,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 /**
  * @author papajuan
  * @date 5/29/2020
+ * Scheduled methods configuration
  **/
 
 @Configuration
@@ -33,6 +34,10 @@ public class HtmlReaderScheduleConfiguration {
     @Autowired
     private SearchParamRepository searchParamRepository;
 
+    /**
+     * this method reload channel tags from channel.link to database every ten minutes
+     * after the application has been started
+     */
     @Scheduled(fixedDelay = TEN_MIN)
     public void scheduleSaveChannelTags() {
         Iterable<Channel> channels = channelRepository.findAll();

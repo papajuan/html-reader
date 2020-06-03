@@ -6,13 +6,11 @@ import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AddChannelComponent } from './add-channel/add-channel.component';
-import { AvailableTagsComponent } from './available-tags/available-tags.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    AddChannelComponent,
-    AvailableTagsComponent
+    AddChannelComponent
   ],
   imports: [
     BrowserModule,

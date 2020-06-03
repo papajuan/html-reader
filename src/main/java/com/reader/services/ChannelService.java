@@ -20,6 +20,7 @@ import java.util.*;
 /**
  * @author papajuan
  * @date 6/1/2020
+ * Main service for all logic
  **/
 @Service
 @Log
@@ -37,17 +38,17 @@ public class ChannelService {
     private SearchParamRepository searchParamRepository;
 
     public void saveOrUpdate(Channel entityToSave) {
-        Optional<Channel> dbEntity = getDbEntity(entityToSave);
-
-        if(dbEntity.isPresent())
-            return;
-        else
+//        Optional<Channel> dbEntity = getDbEntity(entityToSave);
+//
+//        if(dbEntity.isPresent())
+//            return;
+//        else
             channelRepository.save(entityToSave);
     }
 
-    public Optional<Channel> getDbEntity(Channel entity) {
-        return channelRepository.findByLink(entity.getLink());
-    }
+//    public Optional<Channel> getDbEntity(Channel entity) {
+//        return channelRepository.findByLink(entity.getLink());
+//    }
 
     public void addTagsToChannel(int channelId, List<String> neededTags) {
         Channel channel = channelRepository.findById(channelId).get();

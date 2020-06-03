@@ -9,6 +9,7 @@ import javax.persistence.*;
 /**
  * @author papajuan
  * @date 6/1/2020
+ * Tag names for searching
  **/
 
 @Entity

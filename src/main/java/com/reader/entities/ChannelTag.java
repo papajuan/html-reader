@@ -11,6 +11,7 @@ import java.util.List;
 /**
  * @author papajuan
  * @date 5/29/2020
+ * Channel tag entity
  **/
 
 @Entity

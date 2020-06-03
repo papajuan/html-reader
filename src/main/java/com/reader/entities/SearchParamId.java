@@ -9,6 +9,7 @@ import java.io.Serializable;
 /**
  * @author papajuan
  * @date 6/1/2020
+ * Composite id for SearchParam
  **/
 @Data
 @NoArgsConstructor

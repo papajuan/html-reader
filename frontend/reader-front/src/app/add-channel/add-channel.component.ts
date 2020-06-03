@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AddChannelDataService } from '../service/data/add-channel-data.service';
+import { HttpErrorResponse } from '@angular/common/http';
+import { rejects } from 'assert';
+import { AvailableTagsDataService } from '../service/data/available-tags-data.service';
 
 @Component({
   selector: 'app-add-channel',
@@ -10,18 +13,25 @@ import { AddChannelDataService } from '../service/data/add-channel-data.service'
 export class AddChannelComponent implements OnInit {
 
   channelLink = '';
-  uri = '/addChannel';
+  availableTags = [];
 
   constructor(
     private route: ActivatedRoute,
-    private service: AddChannelDataService
+    private addChannelService: AddChannelDataService,
+    private availableTagsService: AvailableTagsDataService
   ) { }
 
   ngOnInit(): void {
   }
 
   sendChannelLink() {
-    this.service.executeAddChannel(this.channelLink, this.uri).subscribe();
+    let id = this.addChannelService.executeAddChannel(this.channelLink);
+    this.setAvailabelTags(id);
   }
 
+  setAvailabelTags(id) {
+    console.log(id);
+    this.availableTags = this.availableTagsService.executeListAvailableTags(id);
+    console.log(this.availableTags);
+  }  
 }
