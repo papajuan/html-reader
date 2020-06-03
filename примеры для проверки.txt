@@ -1,0 +1,21 @@
+Проверяю работу следующим образом:
+1. Добавляю сайт, который надо парсить по адресу
+    - localhost:8888/addChannel?link=https://meduza.io/rss/all
+    или
+    - localhost:8888/addChannel?link=https://https://www.citilink.ru/catalog/mobile/notebooks/
+    в ответ приходит id созданного канала
+2. Смотрю какие тэги доступны на этом сайте:
+    - localhost:8888/listAvailableTags?id={id канала}
+    в ответ приходит список доступных тэгов вида:
+    ["atom:link","description","enclosure","guid","image","item","language","link","pubDate","title","url"]
+3. Формирую POST запрос с выбранными из этого списка тэгами:
+    - localhost:8888/addTags?channelId={id канала}
+    где в теле запроса этот список. Content-Type="application/json"
+4. Далее все тэги сохраняются в базу, а также выбранные тэги сохраняются в базу в качестве параметров будущего поиска
+5. Посмотреть сохраненные тэги канала из базы можно:
+    - localhost:8888/getChannelInfo?channelId={id канала}
+    либо с фильтром по словам в названии:
+    - localhost:8888/getChannelInfoWithParams?channelId={id канала}&searchString={строка-фильтр}
+
+В проекте используется база даны h2. Посмотреть таблицы можно по адресу:
+    - localhost:8888/h2_console
